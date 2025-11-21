@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jescorecli"
+version = "1.0.0"
+description = "CLI for jescore serial communication"
+authors = [
+    { name = "jake-is-ESD-protected", email = "jake@jesdev.io" }
+]
+dependencies = ["pyserial"]
+
+[project.urls]
+"Homepage" = "https://jesdev.io"
+
+[project.scripts]
+jescore = "jescorecli.jescorecli:main"
+
+[project.optional-dependencies]
+dev = ["pytest"]
