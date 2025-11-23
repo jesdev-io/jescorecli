@@ -2,23 +2,21 @@
 
 # jescorecli
 
-|Main Repo 🔆|PyPi Package 📦️|Support 🙏|
+|Main Repo 🔆|Wiki 📖|Support 🙏|
 |-|-|-|
-|[<img src="https://github.com/user-attachments/assets/2fc4f696-0a6c-444b-a99b-053f9bee6d59" width="100"/>](https://github.com/jesdev-io/jescore)||[![Buy me a coffee](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/jseshack)|
+|[<img src="https://github.com/user-attachments/assets/2fc4f696-0a6c-444b-a99b-053f9bee6d59" width="100"/>](https://github.com/jesdev-io/jescore)|[<img src="https://github.com/user-attachments/assets/2fc4f696-0a6c-444b-a99b-053f9bee6d59" width="100"/>](https://github.com/jesdev-io/jescore/wiki/CLI-Documentation)|[![Buy me a coffee](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/jseshack)|
 
 **Host-side serial CLI for MCUs running `jescore`.** This is a Python wrapper for serial communication with MCUs that have a version of `jescore` running on them and are connected by their USB-to-UART interface (default interface for most dev board MCUs). With this tool you can steer your MCU from your standard terminal by invoking `jescore <command>`. See [`jescore` CLI documentation](https://github.com/jesdev-io/jescore/wiki/CLI-Documentation).
 
 ## How to use
-Install this package with its URL or with PyPi and `pip` in a virtual environment:
+Install this package with its URL and `pip` in a virtual environment:
 ```bash
-pip install git+https://github.com/jesdev-io/jescorecli.git # via URL
-pip install jescorecli # via pypi
+pip install git+https://github.com/jesdev-io/jescorecli.git
 ```
 
 You can install it globally with `pipx` if you have multiple projects that use `jescore`:
 ```bash
 pipx install git+https://github.com/jesdev-io/jescorecli.git
-pipx install jescorecli
 ```
 
 If you have a MCU with `jescore` running connected to your PC, you can now communicate with it.
