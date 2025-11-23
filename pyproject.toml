@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jescorecli"
-version = "1.0.1"
+version = "1.0.2"
 description = "CLI for jescore serial communication"
 authors = [
     { name = "jake-is-ESD-protected", email = "jake@jesdev.io" }
