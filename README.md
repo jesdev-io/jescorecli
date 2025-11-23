@@ -37,3 +37,6 @@ This module wraps `pyserial` and maps `jescore` specific string patterns to seri
 - `common.py`: String literals that `jescore` expects on the MCU side.
 - `config.py`: Session-specific configuration variables that handle verbosity and specific line endings.
 - `jescorecli.py`: `pyserial` wrapper and driver code for the module.
+
+## About Testing
+This module's unit testing does not test the module itself, but rather the MCU's response to the built-in serial commands. It therefore does not make sense to run these tests without a `jescore`-enabled MCU attached. You can start testing by installing this module in the development version with `pip install jescorecli[dev]` and then running `pytest`.
