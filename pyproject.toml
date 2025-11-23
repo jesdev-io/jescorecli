@@ -10,6 +10,8 @@ authors = [
     { name = "jake-is-ESD-protected", email = "jake@jesdev.io" }
 ]
 dependencies = ["pyserial"]
+keywords = ["jescore", "MCU", "serial"]
+requires-python = ">=3.9"
 
 [project.urls]
 "Homepage" = "https://jesdev.io"
