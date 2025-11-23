@@ -25,6 +25,11 @@ class CjescoreCli:
             print(CLI_VERBOSE_DEBUG_PREFIX, printable, end=end)
 
     @classmethod
+    def __cliPrint(cls, printable, end='\n'):
+        if config.config_cli_usage:
+            print(printable, end=end)
+
+    @classmethod
     def discoverPorts(cls):
         ports = list(list_ports.comports())
         descriptors = []
@@ -68,10 +73,10 @@ class CjescoreCli:
                         CjescoreCli.__vPrint(RESPONSE_OK)
                     returns.append(stat)
             if len(returns) != 1:
-                print(CLI_PREFIX_CLIENT)
+                CjescoreCli.__cliPrint(CLI_PREFIX_CLIENT)
             for s in returns:
                 if CLI_PREFIX_MCU not in s:
-                    print(s)
+                    CjescoreCli.__cliPrint(s)
             return returns
         except KeyboardInterrupt:
             CjescoreCli.__vPrint(f"Closing port {port_name}.")
@@ -87,7 +92,7 @@ class CjescoreCli:
             while(1):
                 stat = ser.readline().decode('utf-8', errors="ignore").strip("\n\r\x00")
                 if stat != "":
-                    print(stat, end=config.config_iteration_print_end)
+                    CjescoreCli.__cliPrint(stat, end=config.config_iteration_print_end)
         except KeyboardInterrupt:
             CjescoreCli.__vPrint(f"Closing port {port_name}.")
             return
@@ -97,7 +102,7 @@ class CjescoreCli:
             stat = self.uartTransceive(command)
             CjescoreCli.__vPrint(f"Received raw string {stat}")
         else:
-            print("Error: Command not specified.")
+            CjescoreCli.__cliPrint("Error: Command not specified.")
 
 
 def main():
@@ -112,12 +117,13 @@ def main():
 
     args, unknown_args = parser.parse_known_args()
     config.config_verbose = args.verbose
+    config.config_cli_usage = True
 
 
     if args.discover:
         descriptors = CjescoreCli.discoverPorts()
         for descriptor in descriptors:
-            print(descriptor)
+            CjescoreCli.__cliPrint(descriptor)
         return
     
     if not args.port:
@@ -125,7 +131,7 @@ def main():
     else:
         port = args.port
     if not port and not args.port:
-        print("No jescore-enabled device detected!")
+        CjescoreCli.__cliPrint("No jescore-enabled device detected!")
         exit()
     cli = CjescoreCli(baudrate=args.baudrate, port=port, verbose=args.verbose)
     

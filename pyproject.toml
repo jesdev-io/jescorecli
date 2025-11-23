@@ -4,12 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jescorecli"
-version = "1.0.0"
+version = "1.0.1"
 description = "CLI for jescore serial communication"
 authors = [
     { name = "jake-is-ESD-protected", email = "jake@jesdev.io" }
 ]
 dependencies = ["pyserial"]
+keywords = ["jescore", "MCU", "serial"]
+requires-python = ">=3.9"
 
 [project.urls]
 "Homepage" = "https://jesdev.io"
