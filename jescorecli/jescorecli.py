@@ -149,7 +149,8 @@ def main():
     if args.filter:
         filter = args.filter.strip('[]').split(',')
     else:
-        filter = None
+        filter = [args.command]
+        # the filter should always allow non-ID messages to come through!
     cli.run(command_to_send, filter)
 
 
