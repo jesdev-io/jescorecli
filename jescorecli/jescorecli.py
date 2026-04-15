@@ -84,7 +84,7 @@ class CjescoreCli:
             CjescoreCli.vPrint(f"Closing port {port_name}.")
             return
     
-    def uartReceive(self, port: str = None, waitTime: float = 0.01):
+    def uartReceive(self, port: str = None, waitTime: float = 0.01, filter=None):
         try:
             port_name = port if port else self.port
             CjescoreCli.vPrint(f"Listening on port {port_name}...")
@@ -94,6 +94,8 @@ class CjescoreCli:
             while(1):
                 stat = ser.readline().decode('utf-8', errors="ignore").strip("\n\r\x00")
                 if stat != "":
+                    if filter and not any(f in stat for f in filter):
+                        continue
                     CjescoreCli.cliPrint(stat, end=config.config_iteration_print_end)
         except KeyboardInterrupt:
             CjescoreCli.vPrint(f"Closing port {port_name}.")
@@ -137,20 +139,23 @@ def main():
         CjescoreCli.cliPrint("No jescore-enabled device detected!")
         exit()
     cli = CjescoreCli(baudrate=args.baudrate, port=port, verbose=args.verbose)
+
+    if args.filter:
+        filter = args.filter.strip('[]').split(',')
+    else:
+        if args.command:
+            filter = [args.command]
+        else:
+            filter = None
     
     if args.listen:
         if args.inline:
             config.config_iteration_print_end = '\r'
-        cli.uartReceive()
+        cli.uartReceive(filter=filter)
         return
 
     command_to_send = ' '.join([args.command] + unknown_args) if args.command else ' '.join(unknown_args)
     
-    if args.filter:
-        filter = args.filter.strip('[]').split(',')
-    else:
-        filter = [args.command]
-        # the filter should always allow non-ID messages to come through!
     cli.run(command_to_send, filter)
 
 

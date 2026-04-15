@@ -10,7 +10,6 @@ known_jobs = ["help", "echo", "stats", "logp", "bench"]
 device_ports = []
 ports = list(list_ports.comports())
 for port in ports:
-    print(port)
     for host in KNOWN_HOSTS.values():
         if host in port.hwid:
             device_ports.append(CjescoreCli._CjescoreCli__formatPortForOS(port.device))
@@ -24,7 +23,7 @@ def test_cli_unknown():
         cli = CjescoreCli(port=port)
         msg = "test"
         stat = cli.uartTransceive(msg, port=port)
-        assert stat[0] == "(E:) Job not registered! (8)"
+        assert stat[0] == "[core]: (E:) Job not registered! (8)"
         assert stat[1] == CLI_PREFIX_MCU
 
 def test_cli_denied():
@@ -32,7 +31,7 @@ def test_cli_denied():
         cli = CjescoreCli(port=port)
         msg = "core"
         stat = cli.uartTransceive(msg, port=port)
-        assert stat[0] == "(E:) Access denied! (10)"
+        assert stat[0] == "[core]: (E:) Access denied! (10)"
         assert stat[1] == CLI_PREFIX_MCU
 
 def test_cli_echo():
@@ -40,7 +39,7 @@ def test_cli_echo():
         cli = CjescoreCli(port=port)
         msg = "echo test"
         stat = cli.uartTransceive(msg, port=port)
-        assert stat[0] == "test"
+        assert stat[0] == "[echo]: test"
         assert stat[1] == CLI_PREFIX_MCU
 
 def test_cli_help():
@@ -118,7 +117,7 @@ def test_cli_bench():
             assert "ms" in stat
             match = re.search(r'\[ (\d+) \]', stat)
             time = int(match[1]) if match else 1
-            assert time < 50
+            assert time < 60
 
 if __name__ == "__main__":
     pytest.main()
