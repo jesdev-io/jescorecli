@@ -124,7 +124,6 @@ def main():
     config.config_verbose = args.verbose
     config.config_cli_usage = True
 
-
     if args.discover:
         descriptors = CjescoreCli.discoverPorts()
         for descriptor in descriptors:
