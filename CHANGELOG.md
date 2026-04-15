@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3 - 2025-04-15
+
+### Added
+- 🛣️ UART stream separation (available on `jescore` 2.2.4 firmware)
+
 ## 1.0.2 - 2025-11-23
 
 ### Fixed
