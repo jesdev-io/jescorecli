@@ -4,7 +4,7 @@
 
 |Main Repo 🔆|Wiki 📖|Support 🙏|
 |-|-|-|
-|[<img src="https://github.com/user-attachments/assets/2fc4f696-0a6c-444b-a99b-053f9bee6d59" width="100"/>](https://github.com/jesdev-io/jescore)|[<img src="https://github.com/user-attachments/assets/2fc4f696-0a6c-444b-a99b-053f9bee6d59" width="100"/>](https://github.com/jesdev-io/jescore/wiki/CLI-Documentation)|[![Buy me a coffee](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/jseshack)|
+|[<img src="https://github.com/user-attachments/assets/2fc4f696-0a6c-444b-a99b-053f9bee6d59" width="100"/>](https://github.com/jesdev-io/jescore)|[<img src="https://github.com/user-attachments/assets/65346ad1-1f6f-41f8-86b4-0e27a6e0d3b5" width="100"/>](https://github.com/jesdev-io/jescorecli/wiki)|[![Buy me a coffee](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/jseshack)|
 
 **Host-side serial CLI for MCUs running `jescore`.** This is a Python wrapper for serial communication with MCUs that have a version of `jescore` running on them and are connected by their USB-to-UART interface (default interface for most dev board MCUs). With this tool you can steer your MCU from your standard terminal by invoking `jescore <command>`. See [`jescore` CLI documentation](https://github.com/jesdev-io/jescore/wiki/CLI-Documentation).
 
