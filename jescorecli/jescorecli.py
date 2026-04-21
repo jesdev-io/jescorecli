@@ -56,7 +56,7 @@ class CjescoreCli:
             return f"/dev/{port}"
         return port
     
-    def uartTransceive(self, msg: str, port: str = None, waitTime: float = 0.01) -> str:
+    def uartTransceive(self, msg: str, port: str = None, waitTime: float = 0.01, filter=None) -> str:
         try:
             port_name = port if port else self.port
             CjescoreCli.vPrint(f"Sending raw string '{msg}' to jescore on port {port_name}")
@@ -76,13 +76,15 @@ class CjescoreCli:
                 CjescoreCli.cliPrint(CLI_PREFIX_CLIENT)
             for s in returns:
                 if CLI_PREFIX_MCU not in s:
+                    if filter and not any(f in s for f in filter):
+                        continue
                     CjescoreCli.cliPrint(s)
             return returns
         except KeyboardInterrupt:
             CjescoreCli.vPrint(f"Closing port {port_name}.")
             return
     
-    def uartReceive(self, port: str = None, waitTime: float = 0.01):
+    def uartReceive(self, port: str = None, waitTime: float = 0.01, filter=None):
         try:
             port_name = port if port else self.port
             CjescoreCli.vPrint(f"Listening on port {port_name}...")
@@ -92,14 +94,16 @@ class CjescoreCli:
             while(1):
                 stat = ser.readline().decode('utf-8', errors="ignore").strip("\n\r\x00")
                 if stat != "":
+                    if filter and not any(f in stat for f in filter):
+                        continue
                     CjescoreCli.cliPrint(stat, end=config.config_iteration_print_end)
         except KeyboardInterrupt:
             CjescoreCli.vPrint(f"Closing port {port_name}.")
             return
 
-    def run(self, command):
+    def run(self, command, filter):
         if command:
-            stat = self.uartTransceive(command)
+            stat = self.uartTransceive(command, filter=filter)
             CjescoreCli.vPrint(f"Received raw string {stat}")
         else:
             CjescoreCli.cliPrint("Error: Command not specified.")
@@ -114,11 +118,11 @@ def main():
     parser.add_argument("-d", "--discover", action="store_true", help="Discover connected devices known to jescore")
     parser.add_argument("-l", "--listen", action="store_true", help="Listen to the given UART stream")
     parser.add_argument("--inline", action="store_true", help="Enable inline mode when listening with -l")
+    parser.add_argument("--filter", type=str, help="Filter messages originating from certain jobs. Use brackets [,] for multiple job names.")
 
     args, unknown_args = parser.parse_known_args()
     config.config_verbose = args.verbose
     config.config_cli_usage = True
-
 
     if args.discover:
         descriptors = CjescoreCli.discoverPorts()
@@ -134,16 +138,24 @@ def main():
         CjescoreCli.cliPrint("No jescore-enabled device detected!")
         exit()
     cli = CjescoreCli(baudrate=args.baudrate, port=port, verbose=args.verbose)
+
+    if args.filter:
+        filter = args.filter.strip('[]').split(',')
+    else:
+        if args.command:
+            filter = [args.command]
+        else:
+            filter = None
     
     if args.listen:
         if args.inline:
             config.config_iteration_print_end = '\r'
-        cli.uartReceive()
+        cli.uartReceive(filter=filter)
         return
 
     command_to_send = ' '.join([args.command] + unknown_args) if args.command else ' '.join(unknown_args)
     
-    cli.run(command_to_send)
+    cli.run(command_to_send, filter)
 
 
 if __name__ == "__main__":
