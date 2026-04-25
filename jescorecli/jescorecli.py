@@ -88,7 +88,9 @@ class CjescoreCli:
         try:
             port_name = port if port else self.port
             CjescoreCli.vPrint(f"Listening on port {port_name}...")
-            ser = serial.Serial(port_name, baudrate=self.baudrate, timeout=waitTime)
+            ser = serial.Serial(port_name, baudrate=self.baudrate, timeout=waitTime,
+                                dsrdtr=False, rtscts=False)
+            ser.setDTR(False)
             ser.flush()
             ser.setRTS(False)
             while(1):
