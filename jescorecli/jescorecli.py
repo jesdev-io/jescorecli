@@ -143,9 +143,10 @@ def main():
 
     if args.filter:
         filter = args.filter.strip('[]').split(',')
+        filter.append("core")
     else:
         if args.command:
-            filter = [args.command]
+            filter = [args.command, "core"]
         else:
             filter = None
     
