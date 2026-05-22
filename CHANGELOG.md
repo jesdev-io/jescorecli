@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4 - 2026-05-20
+
+### Fixed
+- 🪲 Core messages now always propagate through filter
+- 🔄 Board reset on CLI connect (matching PIO terminal behavior)
+
 ## 1.0.3 - 2025-04-15
 
 ### Added
