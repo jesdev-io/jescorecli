@@ -23,7 +23,8 @@ KNOWN_HOSTS =  {"Generic board with CP2102 USB-to-UART converter": "VID:PID=10C4
                 "USB enhanced serial CH343": "VID:PID=1A86:55D3",
                 "ST LINK": "VID:PID=0483:374B",
                 "ST LINK V3": "VID:PID=0483:374E",
-                "USB Single Serial": "USB VID:PID=1A86:55D4"}
+                "USB Single Serial": "USB VID:PID=1A86:55D4",
+                "TTL232R": "USB VID:PID=0403:6001"}
 CLI_PREFIX_CLIENT = "[jescore]:\t"
 CLI_PREFIX_MCU = "jescore $ "
 CLI_CLIENT_IDENTIFIER = "@py" # unused
