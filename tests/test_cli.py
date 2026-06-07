@@ -23,7 +23,7 @@ def test_cli_unknown():
         cli = CjescoreCli(port=port)
         msg = "test"
         stat = cli.uartTransceive(msg, port=port)
-        assert stat[0] == "[core]: (E:) Job not registered! (8)"
+        assert stat[0] == "[core]: (E:) Job not registered! (9)"
         assert stat[1] == CLI_PREFIX_MCU
 
 def test_cli_denied():
@@ -31,7 +31,7 @@ def test_cli_denied():
         cli = CjescoreCli(port=port)
         msg = "core"
         stat = cli.uartTransceive(msg, port=port)
-        assert stat[0] == "[core]: (E:) Access denied! (10)"
+        assert stat[0] == "[core]: (E:) Access denied! (11)"
         assert stat[1] == CLI_PREFIX_MCU
 
 def test_cli_echo():
