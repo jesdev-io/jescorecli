@@ -56,7 +56,7 @@ class CjescoreCli:
             return f"/dev/{port}"
         return port
     
-    def uartTransceive(self, msg: str, port: str = None, waitTime: float = 0.01, filter=None) -> str:
+    def uartTransceive(self, msg: str, port: str = None, waitTime: float = 0.01, filter=None, keepOpen=False) -> str:
         try:
             port_name = port if port else self.port
             CjescoreCli.vPrint(f"Sending raw string '{msg}' to jescore on port {port_name}")
@@ -66,6 +66,13 @@ class CjescoreCli:
             ser.write(msg.encode())
             stat = ""
             returns = []
+            if keepOpen:
+                while 1:
+                    stat = ser.readline().decode('utf-8', errors="ignore").strip("\n\r\x00")
+                    if stat != "":
+                        if filter and not any(f in stat for f in filter):
+                            continue
+                        CjescoreCli.cliPrint(stat, end=config.config_iteration_print_end)
             while RESPONSE_TRX_OVER not in stat:
                 stat = ser.readline().decode('utf-8', errors="ignore").strip("\n\r\x00")
                 if stat != "":
@@ -80,25 +87,6 @@ class CjescoreCli:
                         continue
                     CjescoreCli.cliPrint(s)
             return returns
-        except KeyboardInterrupt:
-            CjescoreCli.vPrint(f"Closing port {port_name}.")
-            return
-    
-    def uartReceive(self, port: str = None, waitTime: float = 0.01, filter=None):
-        try:
-            port_name = port if port else self.port
-            CjescoreCli.vPrint(f"Listening on port {port_name}...")
-            ser = serial.Serial(port_name, baudrate=self.baudrate, timeout=waitTime,
-                                dsrdtr=False, rtscts=False)
-            ser.setDTR(False)
-            ser.flush()
-            ser.setRTS(False)
-            while(1):
-                stat = ser.readline().decode('utf-8', errors="ignore").strip("\n\r\x00")
-                if stat != "":
-                    if filter and not any(f in stat for f in filter):
-                        continue
-                    CjescoreCli.cliPrint(stat, end=config.config_iteration_print_end)
         except KeyboardInterrupt:
             CjescoreCli.vPrint(f"Closing port {port_name}.")
             return
@@ -150,15 +138,11 @@ def main():
         else:
             filter = None
     
-    if args.listen:
-        if args.inline:
-            config.config_iteration_print_end = '\r'
-        cli.uartReceive(filter=filter)
-        return
+    if args.inline:
+        config.config_iteration_print_end = '\r'
 
     command_to_send = ' '.join([args.command] + unknown_args) if args.command else ' '.join(unknown_args)
-    
-    cli.run(command_to_send, filter)
+    cli.uartTransceive(command_to_send, filter=filter, keepOpen=args.listen)
 
 
 if __name__ == "__main__":
