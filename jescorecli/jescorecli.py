@@ -30,14 +30,14 @@ class CjescoreCli:
         self.port = port
 
     @classmethod
-    def vprint(cls, printable, end='\n'):
+    def vprint(cls, printable, end="\n"):
         if config.config_verbose:
-            print(CLI_VERBOSE_DEBUG_PREFIX, printable, end=end)
+            print(CLI_VERBOSE_DEBUG_PREFIX, printable, end=end)  # noqa: T201
 
     @classmethod
-    def cliprint(cls, printable, end='\n'):
+    def cliprint(cls, printable, end="\n"):
         if config.config_cli_usage:
-            print(printable, end=end)
+            print(printable, end=end)  # noqa: T201
 
     @classmethod
     def discoverports(cls):
@@ -66,7 +66,9 @@ class CjescoreCli:
             return f"/dev/{port}"
         return port
 
-    def uarttransceive(self, msg: str, port: str = None, waittime: float = 0.01, filt=None, keepopen=False) -> str:
+    def uarttransceive(  # noqa: C901
+        self, msg: str, port: str = None, waittime: float = 0.01, filt=None, keepopen=False
+    ) -> str:
         try:
             port_name = port if port else self.port
             CjescoreCli.vprint(f"Sending raw string '{msg}' to jescore on port {port_name}")
@@ -78,13 +80,13 @@ class CjescoreCli:
             returns = []
             if keepopen:
                 while 1:
-                    stat = ser.readline().decode('utf-8', errors="ignore").strip("\n\r\x00")
+                    stat = ser.readline().decode("utf-8", errors="ignore").strip("\n\r\x00")
                     if stat != "":
                         if filt and not any(f in stat for f in filt):
                             continue
                         CjescoreCli.cliprint(stat, end=config.config_iteration_print_end)
             while RESPONSE_TRX_OVER not in stat:
-                stat = ser.readline().decode('utf-8', errors="ignore").strip("\n\r\x00")
+                stat = ser.readline().decode("utf-8", errors="ignore").strip("\n\r\x00")
                 if stat != "":
                     if RESPONSE_TRX_OVER in stat:
                         CjescoreCli.vprint(RESPONSE_OK)
@@ -111,14 +113,20 @@ class CjescoreCli:
 
 def main():
     parser = argparse.ArgumentParser(description="CLI for jescore serial communication.")
-    parser.add_argument("command", type=str, nargs='?', help="Command to send to jescore")
+    parser.add_argument("command", type=str, nargs="?", help="Command to send to jescore")
     parser.add_argument("-p", "--port", type=str, help="Specify the port for connection")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
-    parser.add_argument("-b", "--baudrate", type=int, default=115200, help="Baud rate for communication (default: 115200)")
+    parser.add_argument(
+        "-b", "--baudrate", type=int, default=115200, help="Baud rate for communication (default: 115200)"
+    )
     parser.add_argument("-d", "--discover", action="store_true", help="Discover connected devices known to jescore")
     parser.add_argument("-l", "--listen", action="store_true", help="Listen to the given UART stream")
     parser.add_argument("--inline", action="store_true", help="Enable inline mode when listening with -l")
-    parser.add_argument("--filter", type=str, help="Filter messages originating from certain jobs. Use brackets [,] for multiple job names.")
+    parser.add_argument(
+        "--filter",
+        type=str,
+        help="Filter messages originating from certain jobs. Use brackets [,] for multiple job names.",
+    )
 
     args, unknown_args = parser.parse_known_args()
     config.config_verbose = args.verbose
@@ -140,7 +148,7 @@ def main():
     cli = CjescoreCli(baudrate=args.baudrate, port=port, verbose=args.verbose)
 
     if args.filter:
-        filt = args.filter.strip('[]').split(',')
+        filt = args.filter.strip("[]").split(",")
         filt.append("core")
     else:
         if args.command:
@@ -149,9 +157,9 @@ def main():
             filt = None
 
     if args.inline:
-        config.config_iteration_print_end = '\r'
+        config.config_iteration_print_end = "\r"
 
-    command_to_send = ' '.join([args.command] + unknown_args) if args.command else ' '.join(unknown_args)
+    command_to_send = " ".join([args.command] + unknown_args) if args.command else " ".join(unknown_args)
     cli.uarttransceive(command_to_send, filt=filt, keepopen=args.listen)
 
 
