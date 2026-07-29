@@ -5,6 +5,6 @@
 # Description: jescorecli defaults for settable configurations.
 # -----------------------------------
 
-config_iteration_print_end = '\n'
+config_iteration_print_end = "\n"
 config_verbose = False
 config_cli_usage = False

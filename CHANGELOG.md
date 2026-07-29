@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.5 - 2026-07-29
+
+### Added
+- 🔌 Support for old TTL232R probes
+- 🧰 `uv` development workflow
+- 🧹 Ruff linting configuration and cleanup
+
+### Fixed
+- 🔄 CLI receive/listen handling for keep-open operation
+- 🚦 Compatibility with updated jescore error output
+
 ## 1.0.4 - 2026-05-20
 
 ### Fixed

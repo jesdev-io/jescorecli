@@ -17,16 +17,20 @@ General baseline constants
 `CLI_CLIENT_IDENTIFIER`:        Prefix for the transmitted message to distinguish
                                 between this CLI and the headless CLI.
 """
-KNOWN_HOSTS =  {"Generic board with CP2102 USB-to-UART converter": "VID:PID=10C4:EA60",
-                "Electrosmith Daisy Seed": "VID:PID=0483:5740",
-                "Generic board with CH340 USB-to-UART converter": "VID:PID=1A86:7523",
-                "USB enhanced serial CH343": "VID:PID=1A86:55D3",
-                "ST LINK": "VID:PID=0483:374B",
-                "ST LINK V3": "VID:PID=0483:374E",
-                "USB Single Serial": "USB VID:PID=1A86:55D4"}
+
+KNOWN_HOSTS = {
+    "Generic board with CP2102 USB-to-UART converter": "VID:PID=10C4:EA60",
+    "Electrosmith Daisy Seed": "VID:PID=0483:5740",
+    "Generic board with CH340 USB-to-UART converter": "VID:PID=1A86:7523",
+    "USB enhanced serial CH343": "VID:PID=1A86:55D3",
+    "ST LINK": "VID:PID=0483:374B",
+    "ST LINK V3": "VID:PID=0483:374E",
+    "USB Single Serial": "USB VID:PID=1A86:55D4",
+    "TTL232R": "USB VID:PID=0403:6001",
+}
 CLI_PREFIX_CLIENT = "[jescore]:\t"
 CLI_PREFIX_MCU = "jescore $ "
-CLI_CLIENT_IDENTIFIER = "@py" # unused
+CLI_CLIENT_IDENTIFIER = "@py"  # unused
 
 
 """
@@ -41,8 +45,7 @@ Client side flags
 """
 CMD_CLIENT_CONNECT_FLAG_PORT = "-p"
 CMD_CLIENT_DEBUG_FLAG_VERBOSE = "--verbose"
-CMD_CLIENT_FLAGS = [CMD_CLIENT_CONNECT_FLAG_PORT,
-                    CMD_CLIENT_DEBUG_FLAG_VERBOSE]
+CMD_CLIENT_FLAGS = [CMD_CLIENT_CONNECT_FLAG_PORT, CMD_CLIENT_DEBUG_FLAG_VERBOSE]
 
 """
 Known responses from jescore
