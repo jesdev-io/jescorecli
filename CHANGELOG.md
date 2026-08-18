@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.6 - 2026-08-18
+
+### Added
+- 🤖 Actual API usable interface
+- 🪓 API/CLI split
+
 ## 1.0.5 - 2026-07-29
 
 ### Added

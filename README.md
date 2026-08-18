@@ -31,10 +31,17 @@ jescore -l # keep the serial terminal open to listen for your MCU's messages.
 
 
 ## Module structure
-This module wraps `pyserial` and maps `jescore` specific string patterns to serial I/O. It enables to to use your terminal of choice to behave like a serial terminal emulator with extra QOL sugar. The module is structured as such:
+This module wraps `pyserial` and maps `jescore` specific string patterns to serial I/O. It can be used either as a terminal CLI or as a Python API for host applications that want to route responses through their own logger or UI. The module is structured as such:
 - `common.py`: String literals that `jescore` expects on the MCU side.
 - `config.py`: Session-specific configuration variables that handle verbosity and specific line endings.
-- `jescorecli.py`: `pyserial` wrapper and driver code for the module.
+- `jescorecli.py`: `pyserial` wrapper and driver code for the module. Use `CjescoreCli.command(...)` for programmatic access without print statements; the installed `jescore` executable creates a terminal session and prints as before.
+
+Programmatic example:
+```python
+from jescorecli import CjescoreCli
+
+response = CjescoreCli(port="/dev/ttyACM0").command("<job-name> [args...]")
+```
 
 ## About Testing
 This module's unit testing does not test the module itself, but rather the MCU's response to the built-in serial commands. It therefore does not make sense to run these tests without a `jescore`-enabled MCU attached. You can start testing by installing this module in the development version with `pip install jescorecli[dev]` and then running `pytest`.
