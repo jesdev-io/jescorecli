@@ -23,11 +23,12 @@ from .common import (
 
 
 class CjescoreCli:
-    def __init__(self, port, baudrate=115200, verbose=False) -> None:
+    def __init__(self, port=None, baudrate=115200, verbose=False, terminal=False) -> None:
         self.os_type = platform.system()
         self.baudrate = baudrate
         self.verbose = verbose
-        self.port = port
+        self.terminal = terminal
+        self.port = port if port else self.portautodetect()
 
     @classmethod
     def vprint(cls, printable, end="\n"):
@@ -66,12 +67,19 @@ class CjescoreCli:
             return f"/dev/{port}"
         return port
 
+    def command(self, msg: str, port: str = None, waittime: float = 0.01) -> list[str]:
+        """Send a raw jescore command and return response lines without terminal printing."""
+        response = self.uarttransceive(msg, port=port, waittime=waittime, terminal=False)
+        return [line for line in response if CLI_PREFIX_MCU not in line]
+
     def uarttransceive(  # noqa: C901
-        self, msg: str, port: str = None, waittime: float = 0.01, filt=None, keepopen=False
-    ) -> str:
+        self, msg: str, port: str = None, waittime: float = 0.01, filt=None, keepopen=False, terminal=None
+    ) -> list[str]:
         try:
+            terminal = self.terminal if terminal is None else terminal
             port_name = port if port else self.port
-            CjescoreCli.vprint(f"Sending raw string '{msg}' to jescore on port {port_name}")
+            if terminal:
+                CjescoreCli.vprint(f"Sending raw string '{msg}' to jescore on port {port_name}")
             ser = serial.Serial(port_name, baudrate=self.baudrate, timeout=waittime)
             ser.flush()
             ser.setRTS(False)
@@ -84,30 +92,33 @@ class CjescoreCli:
                     if stat != "":
                         if filt and not any(f in stat for f in filt):
                             continue
-                        CjescoreCli.cliprint(stat, end=config.config_iteration_print_end)
+                        if terminal:
+                            CjescoreCli.cliprint(stat, end=config.config_iteration_print_end)
             while RESPONSE_TRX_OVER not in stat:
                 stat = ser.readline().decode("utf-8", errors="ignore").strip("\n\r\x00")
                 if stat != "":
-                    if RESPONSE_TRX_OVER in stat:
+                    if RESPONSE_TRX_OVER in stat and terminal:
                         CjescoreCli.vprint(RESPONSE_OK)
                     returns.append(stat)
-            if len(returns) != 1:
+            if terminal and len(returns) != 1:
                 CjescoreCli.cliprint(CLI_PREFIX_CLIENT)
             for s in returns:
-                if CLI_PREFIX_MCU not in s:
+                if terminal and CLI_PREFIX_MCU not in s:
                     if filt and not any(f in s for f in filt):
                         continue
                     CjescoreCli.cliprint(s)
             return returns
         except KeyboardInterrupt:
-            CjescoreCli.vprint(f"Closing port {port_name}.")
-            return
+            if terminal:
+                CjescoreCli.vprint(f"Closing port {port_name}.")
+            return []
 
     def run(self, command, filt):
         if command:
             stat = self.uarttransceive(command, filt=filt)
-            CjescoreCli.vprint(f"Received raw string {stat}")
-        else:
+            if self.terminal:
+                CjescoreCli.vprint(f"Received raw string {stat}")
+        elif self.terminal:
             CjescoreCli.cliprint("Error: Command not specified.")
 
 
@@ -145,7 +156,7 @@ def main():
     if not port and not args.port:
         CjescoreCli.cliprint("No jescore-enabled device detected!")
         exit()
-    cli = CjescoreCli(baudrate=args.baudrate, port=port, verbose=args.verbose)
+    cli = CjescoreCli(baudrate=args.baudrate, port=port, verbose=args.verbose, terminal=True)
 
     if args.filter:
         filt = args.filter.strip("[]").split(",")
